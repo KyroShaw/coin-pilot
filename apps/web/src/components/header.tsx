@@ -4,30 +4,36 @@ import { ModeToggle } from "./mode-toggle";
 import UserMenu from "./user-menu";
 
 export default function Header() {
-  const links = [
-    { to: "/", label: "Home" },
-    { to: "/dashboard", label: "Dashboard" },
-    { to: "/todos", label: "Todos" },
-  ] as const;
+	const links = [
+		{ to: "/sectors", label: "板块轮动" },
+		{ to: "/news", label: "宏观简报" },
+		{ to: "/binance", label: "API 绑定" },
+	] as const;
 
-  return (
-    <div>
-      <div className="flex flex-row items-center justify-between px-2 py-1">
-        <nav className="flex gap-4 text-lg">
-          {links.map(({ to, label }) => {
-            return (
-              <Link key={to} to={to}>
-                {label}
-              </Link>
-            );
-          })}
-        </nav>
-        <div className="flex items-center gap-2">
-          <ModeToggle />
-          <UserMenu />
-        </div>
-      </div>
-      <hr />
-    </div>
-  );
+	return (
+		<div>
+			<div className="flex flex-row items-center justify-between px-3 py-2">
+				<nav className="flex items-center gap-5 text-sm">
+					<Link className="font-semibold tracking-tight" to="/sectors">
+						coin-pilot
+					</Link>
+					{links.map(({ to, label }) => (
+						<Link
+							activeProps={{ className: "text-foreground" }}
+							className="text-muted-foreground hover:text-foreground"
+							key={to}
+							to={to}
+						>
+							{label}
+						</Link>
+					))}
+				</nav>
+				<div className="flex items-center gap-2">
+					<ModeToggle />
+					<UserMenu />
+				</div>
+			</div>
+			<hr />
+		</div>
+	);
 }
