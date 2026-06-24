@@ -13,6 +13,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.105.0",
     "@coin-pilot/auth": "workspace:*",
     "@coin-pilot/db": "workspace:*",
     "@coin-pilot/env": "workspace:*",

@@ -137,3 +137,61 @@ export async function getBinanceAccountForUser(
 
 	return fetchBinanceAccount(apiKey, secretKey);
 }
+
+const TICKER_24HR_PATH = "/api/v3/ticker/24hr";
+
+/** 公开 24h 行情（仅取本项目关心字段）。 */
+export interface BinanceTicker {
+	lastPrice: number;
+	priceChangePercent: number;
+	quoteVolume: number;
+	symbol: string;
+}
+
+/**
+ * 拉取全市场 24h ticker（公开接口，无需鉴权），筛选 USDT 计价交易对。
+ * 用于板块行情采集；失败抛出 BinanceApiError。
+ */
+export async function fetchUsdtTickers(): Promise<BinanceTicker[]> {
+	const controller = new AbortController();
+	const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+	let response: Response;
+	try {
+		response = await fetch(`${BINANCE_API_BASE}${TICKER_24HR_PATH}`, {
+			method: "GET",
+			signal: controller.signal,
+		});
+	} catch (error) {
+		if (error instanceof Error && error.name === "AbortError") {
+			throw new BinanceApiError("拉取 Binance 行情超时，请稍后重试");
+		}
+		throw new BinanceApiError("无法连接 Binance 行情接口");
+	} finally {
+		clearTimeout(timer);
+	}
+
+	if (!response.ok) {
+		throw new BinanceApiError("拉取 Binance 行情失败");
+	}
+
+	const raw = (await response.json().catch(() => null)) as Array<{
+		symbol?: string;
+		lastPrice?: string;
+		priceChangePercent?: string;
+		quoteVolume?: string;
+	}> | null;
+
+	if (!Array.isArray(raw)) {
+		throw new BinanceApiError("Binance 行情响应格式异常");
+	}
+
+	return raw
+		.filter((t) => typeof t.symbol === "string" && t.symbol.endsWith("USDT"))
+		.map((t) => ({
+			symbol: t.symbol as string,
+			lastPrice: Number(t.lastPrice ?? 0),
+			priceChangePercent: Number(t.priceChangePercent ?? 0),
+			quoteVolume: Number(t.quoteVolume ?? 0),
+		}));
+}
