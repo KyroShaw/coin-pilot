@@ -28,3 +28,11 @@
 
 - **刷新架构**：`packages/api/src/services/sector.ts` 编排（行情→AI 归类→龙头匹配→事务落库，统一 `snapshotId`）。失败写 `sector_refresh_log` 并**保留上一成功快照**（不删旧数据）。`apps/server/src/scheduler.ts` 用 `setInterval`（`SECTOR_REFRESH_INTERVAL_MS` 默认 25min，env 上限 30min 满足 AC-002-3）+ 并发互斥；内部端点 `POST /internal/sector/refresh` 用 `INTERNAL_REFRESH_TOKEN`（header `x-internal-token`）保护，供外部 cron 兜底。
 - **读取即缓存**：`sector.getAll` 只读最新成功 `snapshotId`，用户请求不触发外部调用；`stale` = 距上次刷新 > 30min。后续 feature 的定时类任务可复用此「调度+快照+stale」模式。
+
+## 2026-06-24 — F-003 宏观消息
+
+- **CryptoPanic**：`packages/api/src/lib/cryptopanic.ts`，v1 `posts/?auth_token=...&public=true`；429/5xx 指数退避重试 3 次；`mapTags`（关键词→macro/regulation/market，market 兜底）与 `urlHash`（缺 id 时去重兜底）为纯函数、已单测。
+- **去重与摘要缓存**：`onConflictDoNothing(externalId)` 去重；摘要仅对 `aiSummary IS NULL` 生成（haiku、并发 5、`allSettled` 单条失败跳过下轮重试），同条只调一次 AI。
+- **游标分页**：`(publishedAt, id)` 复合游标，`desc(publishedAt), desc(id)`，cursor 编码 `ISO__id`；前端 `useInfiniteQuery(trpc.news.list.infiniteQueryOptions(input, { getNextPageParam: p => p.nextCursor }))`，tag 入参变化即重查。
+- **drizzle text[]**：`text("tags").array().notNull().default(sql\`'{}'::text[]\`)`；GIN 索引 `index(...).using("gin", table.tags)`，数组筛选用 `arrayContains(col, [tag])`；倒序索引 `table.col.desc()`。
+- **调度复用**：`apps/server/src/scheduler.ts` 加 `triggerNewsRefresh` + `startNewsScheduler`（独立互斥，复用 `SECTOR_REFRESH_INTERVAL_MS`）；内部端点 `POST /internal/news/refresh`。**注意**：格式化器会把「暂未被重新赋值的 `let`」改成 `const`——加可变模块级标志时，先连同赋值一起写，避免被改成 const 后报错。

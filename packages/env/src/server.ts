@@ -14,6 +14,8 @@ export const env = createEnv({
 			.regex(/^[0-9a-fA-F]{64}$/, "必须是 64 位十六进制（32 字节）"),
 		// Anthropic Claude API Key（AI 汇总/复盘等功能；服务端持有，绝不下发前端）
 		ANTHROPIC_API_KEY: z.string().min(1),
+		// CryptoPanic 新闻 API Key（宏观消息拉取；服务端持有）
+		CRYPTOPANIC_API_KEY: z.string().min(1),
 		// 内部刷新端点 token（保护服务端定时刷新触发端点）
 		INTERNAL_REFRESH_TOKEN: z.string().min(1),
 		// 板块行情刷新间隔（毫秒，默认 25 分钟，须 ≤ 30 分钟）

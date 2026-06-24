@@ -7,7 +7,12 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
-import { startSectorScheduler, triggerSectorRefresh } from "./scheduler";
+import {
+	startNewsScheduler,
+	startSectorScheduler,
+	triggerNewsRefresh,
+	triggerSectorRefresh,
+} from "./scheduler";
 
 const app = new Hono();
 
@@ -34,13 +39,28 @@ app.use(
 
 app.get("/", (c) => c.text("OK"));
 
-// 内部刷新端点：供外部 cron 兜底触发板块刷新，需校验内部 token
+// 内部刷新端点：供外部 cron 兜底触发刷新，需校验内部 token
 app.post("/internal/sector/refresh", async (c) => {
 	if (c.req.header("x-internal-token") !== env.INTERNAL_REFRESH_TOKEN) {
 		return c.json({ error: "unauthorized" }, 401);
 	}
 	try {
 		const result = await triggerSectorRefresh();
+		return c.json(result);
+	} catch (error) {
+		return c.json(
+			{ error: error instanceof Error ? error.message : "refresh failed" },
+			500
+		);
+	}
+});
+
+app.post("/internal/news/refresh", async (c) => {
+	if (c.req.header("x-internal-token") !== env.INTERNAL_REFRESH_TOKEN) {
+		return c.json({ error: "unauthorized" }, 401);
+	}
+	try {
+		const result = await triggerNewsRefresh();
 		return c.json(result);
 	} catch (error) {
 		return c.json(
@@ -60,5 +80,6 @@ serve(
 	(info) => {
 		console.log(`Server is running on http://localhost:${info.port}`);
 		startSectorScheduler();
+		startNewsScheduler();
 	}
 );
