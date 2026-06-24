@@ -16,29 +16,29 @@
 
 ### 分组一：账号体系（F-001-1）
 
-- [ ] **T-001**：在 `packages/auth` 配置/确认 Better-Auth 邮箱密码 provider（注册、登录、登出、session）。~1h
-- [ ] **T-002**：在 `apps/web/src/routes/` 新增 `login`、`register` 路由页面，使用 `@coin-pilot/ui` 表单组件接入 Better-Auth 客户端。~1h
-- [ ] **T-003**：为受保护页面添加前端路由守卫（无 session 重定向到 `login`），确认 `createContext` 暴露 `ctx.session`。~30min
+- [x] **T-001**：在 `packages/auth` 配置/确认 Better-Auth 邮箱密码 provider（注册、登录、登出、session）。~1h
+- [x] **T-002**：在 `apps/web/src/routes/` 新增 `login`、`register` 路由页面，使用 `@coin-pilot/ui` 表单组件接入 Better-Auth 客户端。~1h
+- [x] **T-003**：为受保护页面添加前端路由守卫（无 session 重定向到 `login`），确认 `createContext` 暴露 `ctx.session`。~30min
 
 ### 分组二：加密与数据模型（F-001-3）
 
-- [ ] **T-004**：在 `@coin-pilot/env` 增加并校验 `ENCRYPTION_MASTER_KEY`（32 字节）环境变量。~15min
-- [ ] **T-005**：实现 AES-256-GCM 加解密工具 `encrypt`/`decrypt`（返回/接收 `iv + authTag + ciphertext`），含单测。~1h
-- [ ] **T-006**：在 `packages/db/src/schema/binance.ts` 定义 `binance_credential` 表并从 `schema/index.ts` 重导出。~30min
-- [ ] **T-007**：执行 `pnpm db:generate` 生成迁移并 `pnpm db:migrate` 应用。~15min
+- [x] **T-004**：在 `@coin-pilot/env` 增加并校验 `ENCRYPTION_MASTER_KEY`（32 字节）环境变量。~15min
+- [x] **T-005**：实现 AES-256-GCM 加解密工具 `encrypt`/`decrypt`（返回/接收 `iv + authTag + ciphertext`），含单测。~1h
+- [x] **T-006**：在 `packages/db/src/schema/binance.ts` 定义 `binance_credential` 表并从 `schema/index.ts` 重导出。~30min
+- [x] **T-007**：执行 `pnpm db:generate` 生成迁移并 `pnpm db:migrate` 应用。~15min
 
 ### 分组三：Binance 绑定与拉取（F-001-2）
 
-- [ ] **T-008**：实现 Binance 客户端工具：HMAC SHA256 签名 + 拉取账户信息（`getBinanceAccountInfo`），含超时与友好错误。~1h
-- [ ] **T-009**：实现 `binance.bind` procedure（zod 校验 → 连通性 + 只读权限校验 → 加密 upsert → 返回脱敏结果）。~1h
-- [ ] **T-010**：实现 `binance.status` 与 `binance.unbind` procedure（均 `protectedProcedure`，仅脱敏输出），并在 `routers/index.ts` 合并 `binance` 路由。~30min
-- [ ] **T-011**：在 `apps/web/src/routes/` 新增绑定页：API Key/Secret 表单、绑定状态展示、解绑，调用上述 procedure。~1h
+- [x] **T-008**：实现 Binance 客户端工具：HMAC SHA256 签名 + 拉取账户信息（`getBinanceAccountInfo`），含超时与友好错误。~1h
+- [x] **T-009**：实现 `binance.bind` procedure（zod 校验 → 连通性 + 只读权限校验 → 加密 upsert → 返回脱敏结果）。~1h
+- [x] **T-010**：实现 `binance.status` 与 `binance.unbind` procedure（均 `protectedProcedure`，仅脱敏输出），并在 `routers/index.ts` 合并 `binance` 路由。~30min
+- [x] **T-011**：在 `apps/web/src/routes/` 新增绑定页：API Key/Secret 表单、绑定状态展示、解绑，调用上述 procedure。~1h
 
 ### 分组四：集成与测试
 
-- [ ] **T-012**：联调全链路（注册→登录→绑定→拉取账户信息→解绑），打通前后端。~30min
-- [ ] **T-013**：核验 AC-001-1 / AC-001-2 / AC-001-3，重点检查响应体与日志中无明文 Key/Secret。~30min
-- [ ] **T-014**：运行 `pnpm dlx ultracite fix` 与类型检查，修复 lint/格式/类型问题。~15min
+- [x] **T-012**：联调全链路（注册→登录→绑定→拉取账户信息→解绑），打通前后端。~30min
+- [x] **T-013**：核验 AC-001-1 / AC-001-2 / AC-001-3，重点检查响应体与日志中无明文 Key/Secret。~30min
+- [x] **T-014**：运行 `pnpm dlx ultracite fix` 与类型检查，修复 lint/格式/类型问题。~15min
 
 ## 依赖关系
 

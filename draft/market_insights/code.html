@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta content="width=device-width, initial-scale=1.0" name="viewport">
+		<title>Nexus Terminal - Market Insights</title>
+		<script
+			src="https://cdn.tailwindcss.com?plugins=forms,container-queries"
+		></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
+			rel="stylesheet"
+		>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		>
+		<style>
+		body {
+			font-family: "Inter", sans-serif;
+			color: #dae2fd;
+			background-color: #060e20;
+		}
+		.glass-panel {
+			background: rgba(15, 23, 42, 0.7);
+			border: 1px solid #1e293b;
+			backdrop-filter: blur(20px);
+		}
+		.ai-border {
+			background:
+				linear-gradient(#0f172a, #0f172a) padding-box,
+				linear-gradient(to right, #2563eb, transparent) border-box;
+			border: 1px solid transparent;
+		}
+		.scrollbar-hide::-webkit-scrollbar {
+			display: none;
+		}
+		.material-symbols-outlined {
+			font-variation-settings:
+				"FILL" 0,
+				"wght" 400,
+				"GRAD" 0,
+				"opsz" 24;
+		}
+		</style>
+		<script id="tailwind-config">
+		"use strict";
+		tailwind.config = {
+			darkMode: "class",
+			theme: {
+				extend: {
+					colors: {
+						"surface-container-high": "#222a3d",
+						"primary-container": "#2563eb",
+						background: "#0b1326",
+						"secondary-fixed": "#6ffbbe",
+						outline: "#8d90a0",
+						secondary: "#4edea3",
+						"error-container": "#93000a",
+						"on-secondary-fixed-variant": "#005236",
+						tertiary: "#ffb3ad",
+						"surface-bright": "#31394d",
+						"inverse-primary": "#0053db",
+						"on-surface-variant": "#c3c6d7",
+						error: "#ffb4ab",
+						"on-error-container": "#ffdad6",
+						surface: "#0b1326",
+						"outline-variant": "#434655",
+						primary: "#b4c5ff",
+						"on-tertiary-fixed-variant": "#930013",
+						"on-secondary-fixed": "#002113",
+						"on-primary-fixed-variant": "#003ea8",
+						"surface-dim": "#0b1326",
+						"on-tertiary-fixed": "#410004",
+						"on-background": "#dae2fd",
+						"primary-fixed": "#dbe1ff",
+						"secondary-fixed-dim": "#4edea3",
+						"tertiary-container": "#cf2c30",
+						"tertiary-fixed-dim": "#ffb3ad",
+						"surface-container-highest": "#2d3449",
+						"tertiary-fixed": "#ffdad7",
+						"surface-container-low": "#131b2e",
+						"surface-tint": "#b4c5ff",
+						"on-primary": "#002a78",
+						"inverse-surface": "#dae2fd",
+						"surface-container-lowest": "#060e20",
+						"surface-variant": "#2d3449",
+						"on-secondary-container": "#00311f",
+						"on-error": "#690005",
+						"primary-fixed-dim": "#b4c5ff",
+						"on-tertiary-container": "#ffecea",
+						"surface-container": "#171f33",
+						"on-primary-fixed": "#00174b",
+						"on-primary-container": "#eeefff",
+						"inverse-on-surface": "#283044",
+						"secondary-container": "#00a572",
+						"on-surface": "#dae2fd",
+						"on-secondary": "#003824",
+						"on-tertiary": "#68000a",
+					},
+					borderRadius: {
+						DEFAULT: "0.125rem",
+						lg: "0.25rem",
+						xl: "0.5rem",
+						full: "0.75rem",
+					},
+					spacing: {
+						"widget-padding": "20px",
+						unit: "4px",
+						"stack-default": "16px",
+						"stack-compact": "8px",
+						gutter: "16px",
+						"container-margin": "24px",
+					},
+					fontFamily: {
+						"label-md": ["Inter"],
+						"headline-sm": ["Inter"],
+						"body-lg": ["Inter"],
+						"body-sm": ["Inter"],
+						"headline-lg": ["Inter"],
+						"display-lg": ["Inter"],
+						"body-md": ["Inter"],
+						"headline-md": ["Inter"],
+						"data-mono": ["Inter"],
+					},
+					fontSize: {
+						"label-md": [
+							"12px",
+							{
+								lineHeight: "16px",
+								letterSpacing: "0.05em",
+								fontWeight: "600",
+							},
+						],
+						"headline-sm": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+						"body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+						"body-sm": ["12px", { lineHeight: "16px", fontWeight: "400" }],
+						"headline-lg": [
+							"32px",
+							{
+								lineHeight: "40px",
+								letterSpacing: "-0.01em",
+								fontWeight: "600",
+							},
+						],
+						"display-lg": [
+							"48px",
+							{
+								lineHeight: "56px",
+								letterSpacing: "-0.02em",
+								fontWeight: "700",
+							},
+						],
+						"body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+						"headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+						"data-mono": ["14px", { lineHeight: "20px", fontWeight: "500" }],
+					},
+				},
+			},
+		};
+		</script>
+	</head>
+	<body class="bg-surface-container-lowest text-on-background overflow-hidden">
+		<!-- SideNavBar (Shared Component) -->
+		<aside
+			class="fixed left-0 top-0 h-full w-64 bg-surface-container border-r border-outline-variant flex flex-col z-50"
+		>
+			<div class="p-container-margin">
+				<h1 class="text-headline-sm font-headline-sm font-bold text-primary">
+					Nexus Trading
+				</h1>
+				<p
+					class="text-label-md font-label-md text-on-surface-variant opacity-70"
+				>
+					Institutional Grade
+				</p>
+			</div>
+			<nav class="flex-1 flex flex-col px-4 gap-stack-compact">
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-primary border-r-2 border-primary bg-primary-container/10 transition-colors"
+					href="#"
+				>
+					<span class="material-symbols-outlined">insights</span>
+					<span class="text-label-md font-label-md">Insights</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-bright transition-all active:scale-95"
+					href="#"
+				>
+					<span class="material-symbols-outlined">tactic</span>
+					<span class="text-label-md font-label-md">Strategy</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-bright transition-all active:scale-95"
+					href="#"
+				>
+					<span class="material-symbols-outlined">terminal</span>
+					<span class="text-label-md font-label-md">Execution</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-bright transition-all active:scale-95"
+					href="#"
+				>
+					<span class="material-symbols-outlined">history</span>
+					<span class="text-label-md font-label-md">History</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-bright transition-all active:scale-95"
+					href="#"
+				>
+					<span class="material-symbols-outlined">analytics</span>
+					<span class="text-label-md font-label-md">Analysis</span>
+				</a>
+			</nav>
+			<div
+				class="mt-auto px-4 py-6 border-t border-outline-variant flex flex-col gap-stack-compact"
+			>
+				<button
+					class="w-full bg-primary-container text-on-primary-container py-3 font-label-md text-label-md rounded-lg mb-4 hover:opacity-90 active:scale-95 transition-all"
+				>
+					New Strategy
+				</button>
+				<a
+					class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface"
+					href="#"
+				>
+					<span class="material-symbols-outlined">settings</span>
+					<span class="text-label-md font-label-md">Settings</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface"
+					href="#"
+				>
+					<span class="material-symbols-outlined">help_outline</span>
+					<span class="text-label-md font-label-md">Support</span>
+				</a>
+			</div>
+		</aside>
+		<!-- Main Content Shell -->
+		<div class="ml-64 flex flex-col h-screen overflow-hidden">
+			<!-- TopNavBar (Shared Component) -->
+			<header
+				class="h-16 flex items-center justify-between px-container-margin bg-surface/80 backdrop-blur-md border-b border-outline-variant sticky top-0 z-40"
+			>
+				<div class="flex items-center gap-stack-default flex-1">
+					<span
+						class="text-headline-md font-headline-md font-black tracking-tight text-primary"
+						>Nexus Terminal</span
+					>
+					<div class="relative w-96 ml-8">
+						<span
+							class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline"
+							>search</span
+						>
+						<input
+							class="w-full bg-surface-container-low border border-outline-variant rounded-full py-2 pl-10 pr-4 text-body-md focus:border-primary focus:ring-0 transition-all"
+							placeholder="Search markets, sectors, or macro events..."
+							type="text"
+						>
+					</div>
+				</div>
+				<div class="flex items-center gap-6">
+					<div class="flex items-center gap-2">
+						<span
+							class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(78,222,163,0.6)]"
+						></span>
+						<span class="text-label-md font-label-md text-secondary"
+							>AI Agent: Active</span
+						>
+					</div>
+					<div class="flex items-center gap-2">
+						<span class="text-label-md font-label-md text-on-surface-variant"
+							>Binance API</span
+						>
+						<span class="material-symbols-outlined text-secondary text-[18px]"
+							>check_circle</span
+						>
+					</div>
+					<div class="flex items-center gap-4">
+						<span
+							class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-all"
+							>notifications</span
+						>
+						<span
+							class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-all"
+							>account_balance_wallet</span
+						>
+						<div
+							class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden"
+						>
+							<img
+								alt="User Avatar"
+								class="w-full h-full object-cover"
+								data-alt="A professional headshot of a financial trader in a dark, tech-oriented environment. The person has a serious, analytical expression, and is softly backlit by cool blue and teal studio lights. The aesthetic is clean, high-end corporate modern with a shallow depth of field, suggesting a focus on precision and digital intelligence."
+								src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3Du6mPUg_dW2vXZngt_I3-PW9H9US7iu3g7-34pRXnrsmEyUsOEZ4OUKWSztM2ZOTfcJTLI9Ciba0LFgzCefniiGDsxVFW38nOSETZYRQNoMSazd3kdJFr7qkCLNCj-w2f2UOMpjv98mFkL2LK3CciuTiXDKWKzK6Hj_RmOrZndeJOv3ZVA6hgh1TKBqqkuxqjhtQgeC8wPqvn5SPIwcaaBePxLgKPBwAnQN4eTM4vRNITVl41P9Ocy_hSmT5nMsk-wqwQNZrV7E"
+							>
+						</div>
+					</div>
+				</div>
+			</header>
+			<!-- Main Workspace -->
+			<main class="flex-1 overflow-y-auto bg-background p-container-margin">
+				<!-- 1. Market Pulse Header -->
+				<section class="mb-gutter">
+					<div class="flex justify-between items-end mb-stack-default">
+						<div>
+							<h2 class="text-headline-lg font-headline-lg text-on-background">
+								Market Pulse
+							</h2>
+							<p class="text-body-md text-on-surface-variant">
+								Real-time sector intelligence and sentiment overview
+							</p>
+						</div>
+						<!-- Live View Toggle -->
+						<div
+							class="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant"
+						>
+							<button
+								class="px-4 py-1.5 text-label-md font-label-md rounded transition-all bg-primary-container text-on-primary-container"
+							>
+								1H
+							</button>
+							<button
+								class="px-4 py-1.5 text-label-md font-label-md rounded transition-all text-on-surface-variant hover:text-on-surface"
+							>
+								4H
+							</button>
+							<button
+								class="px-4 py-1.5 text-label-md font-label-md rounded transition-all text-on-surface-variant hover:text-on-surface"
+							>
+								1D
+							</button>
+						</div>
+					</div>
+					<div class="grid grid-cols-12 gap-gutter">
+						<!-- Sentiment Summary -->
+						<div
+							class="col-span-12 lg:col-span-4 glass-panel p-widget-padding rounded-xl flex items-center justify-between ai-border"
+						>
+							<div>
+								<span
+									class="text-label-md font-label-md text-primary block mb-2 uppercase tracking-wider"
+									>AI Sentiment Summary</span
+								>
+								<div class="flex items-baseline gap-2">
+									<span class="text-headline-md font-headline-md text-secondary"
+										>Cautiously Bullish</span
+									>
+									<span class="text-body-sm text-secondary opacity-80"
+										>(72/100)</span
+									>
+								</div>
+								<p
+									class="text-body-sm text-on-surface-variant mt-2 leading-relaxed"
+								>
+									Increasing accumulation in Layer 2 ecosystems despite macro
+									headwinds. BTC dominance holding steady at 52.4%.
+								</p>
+							</div>
+							<div class="w-20 h-20 relative flex items-center justify-center">
+								<svg class="w-full h-full -rotate-90">
+									<circle
+										class="text-surface-container-highest"
+										cx="40"
+										cy="40"
+										fill="transparent"
+										r="36"
+										stroke="currentColor"
+										stroke-width="4"
+									></circle>
+									<circle
+										class="text-secondary"
+										cx="40"
+										cy="40"
+										fill="transparent"
+										r="36"
+										stroke="currentColor"
+										stroke-dasharray="226"
+										stroke-dashoffset="63"
+										stroke-width="4"
+									></circle>
+								</svg>
+								<span
+									class="absolute inset-0 flex items-center justify-center text-label-md font-label-md text-on-surface"
+									>72%</span
+								>
+							</div>
+						</div>
+						<!-- Sector Quick Stats -->
+						<div
+							class="col-span-12 lg:col-span-8 flex gap-gutter overflow-x-auto scrollbar-hide"
+						>
+							<div
+								class="min-w-[200px] flex-1 glass-panel p-widget-padding rounded-xl"
+							>
+								<span
+									class="text-label-md font-label-md text-on-surface-variant block mb-1"
+									>Top Sector</span
+								>
+								<div class="flex justify-between items-center">
+									<span class="text-headline-sm font-headline-sm"
+										>AI Infrastructure</span
+									>
+									<span
+										class="text-secondary font-data-mono text-body-md font-bold"
+										>+12.4%</span
+									>
+								</div>
+							</div>
+							<div
+								class="min-w-[200px] flex-1 glass-panel p-widget-padding rounded-xl"
+							>
+								<span
+									class="text-label-md font-label-md text-on-surface-variant block mb-1"
+									>Vol / 24h</span
+								>
+								<div class="flex justify-between items-center">
+									<span class="text-headline-sm font-headline-sm font-data-mono"
+										>$84.2B</span
+									>
+									<span class="text-error font-data-mono text-body-md font-bold"
+										>-4.2%</span
+									>
+								</div>
+							</div>
+							<div
+								class="min-w-[200px] flex-1 glass-panel p-widget-padding rounded-xl"
+							>
+								<span
+									class="text-label-md font-label-md text-on-surface-variant block mb-1"
+									>Liquidations</span
+								>
+								<div class="flex justify-between items-center">
+									<span class="text-headline-sm font-headline-sm font-data-mono"
+										>$124M</span
+									>
+									<span class="text-on-surface-variant text-label-md"
+										>Last 1H</span
+									>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<div class="grid grid-cols-12 gap-gutter">
+					<!-- Center Column: Sectors & Heatmap -->
+					<div class="col-span-12 xl:col-span-8 flex flex-col gap-gutter">
+						<!-- 2. Sector Rotation Heatmap (24h) -->
+						<div class="glass-panel p-widget-padding rounded-xl min-h-[300px]">
+							<div class="flex justify-between items-center mb-stack-default">
+								<h3 class="text-headline-sm font-headline-sm">
+									Sector Rotation Heatmap (24h)
+								</h3>
+								<span
+									class="material-symbols-outlined text-outline cursor-pointer hover:text-primary"
+									>fullscreen</span
+								>
+							</div>
+							<div
+								class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 h-48"
+							>
+								<!-- Simulated Heatmap Squares -->
+								<div
+									class="bg-secondary/40 border border-secondary rounded-lg flex items-center justify-center col-span-2 row-span-2 group cursor-pointer transition-all hover:bg-secondary/60"
+								>
+									<div class="text-center">
+										<span class="text-label-md font-bold block">AI</span>
+										<span class="text-body-sm font-data-mono">+12.4%</span>
+									</div>
+								</div>
+								<div
+									class="bg-secondary/20 border border-secondary/40 rounded-lg flex items-center justify-center col-span-2 group cursor-pointer transition-all hover:bg-secondary/30"
+								>
+									<div class="text-center">
+										<span class="text-label-md font-bold block">Layer 2</span>
+										<span class="text-body-sm font-data-mono">+5.8%</span>
+									</div>
+								</div>
+								<div
+									class="bg-error/40 border border-error rounded-lg flex items-center justify-center col-span-2 row-span-2 group cursor-pointer transition-all hover:bg-error/60"
+								>
+									<div class="text-center">
+										<span class="text-label-md font-bold block">DeFi 1.0</span>
+										<span class="text-body-sm font-data-mono">-8.2%</span>
+									</div>
+								</div>
+								<div
+									class="bg-secondary/10 border border-outline-variant rounded-lg flex items-center justify-center group cursor-pointer transition-all hover:bg-surface-bright"
+								>
+									<span class="text-body-sm font-bold">RWA</span>
+								</div>
+								<div
+									class="bg-surface-container-high border border-outline-variant rounded-lg flex items-center justify-center group cursor-pointer transition-all hover:bg-surface-bright"
+								>
+									<span class="text-body-sm font-bold">NFT</span>
+								</div>
+								<div
+									class="bg-error/20 border border-error/40 rounded-lg flex items-center justify-center group cursor-pointer transition-all hover:bg-error/30"
+								>
+									<span class="text-body-sm font-bold">Meme</span>
+								</div>
+								<div
+									class="bg-secondary/20 border border-secondary/40 rounded-lg flex items-center justify-center col-span-2 group cursor-pointer transition-all hover:bg-secondary/30"
+								>
+									<span class="text-label-md font-bold">DePIN</span>
+								</div>
+							</div>
+						</div>
+						<!-- 3. Sector Rotation Cards (M1.1) -->
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-default">
+							<!-- AI Sector Card -->
+							<div
+								class="glass-panel rounded-xl overflow-hidden flex flex-col hover:border-primary/50 transition-all"
+							>
+								<div
+									class="p-widget-padding flex justify-between items-start bg-surface-container-high/50"
+								>
+									<div>
+										<h4 class="text-headline-sm font-bold">AI &amp; Data</h4>
+										<div class="flex items-center gap-2 mt-1">
+											<div
+												class="flex gap-1 h-1.5 w-16 bg-surface-container rounded-full overflow-hidden"
+											>
+												<div class="h-full bg-secondary w-[80%]"></div>
+											</div>
+											<span class="text-label-md text-secondary"
+												>High Heat</span
+											>
+										</div>
+									</div>
+									<div class="text-right">
+										<span class="text-headline-sm font-data-mono text-secondary"
+											>+12.42%</span
+										>
+										<span class="text-body-sm text-on-surface-variant block"
+											>Avg Change</span
+										>
+									</div>
+								</div>
+								<div class="p-widget-padding flex-1">
+									<span
+										class="text-label-md text-on-surface-variant uppercase tracking-wider mb-stack-compact block"
+										>Leading Tokens (龙头币种)</span
+									>
+									<div class="space-y-stack-compact">
+										<div
+											class="flex justify-between items-center py-2 border-b border-outline-variant/30"
+										>
+											<div class="flex items-center gap-2">
+												<div
+													class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary"
+												>
+													FET
+												</div>
+												<span class="text-body-md font-bold">Fetch.ai</span>
+											</div>
+											<span class="text-secondary font-data-mono text-body-md"
+												>+18.5%</span
+											>
+										</div>
+										<div
+											class="flex justify-between items-center py-2 border-b border-outline-variant/30"
+										>
+											<div class="flex items-center gap-2">
+												<div
+													class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary"
+												>
+													RNDR
+												</div>
+												<span class="text-body-md font-bold">Render</span>
+											</div>
+											<span class="text-secondary font-data-mono text-body-md"
+												>+14.2%</span
+											>
+										</div>
+										<div class="flex justify-between items-center py-2">
+											<div class="flex items-center gap-2">
+												<div
+													class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary"
+												>
+													AGIX
+												</div>
+												<span class="text-body-md font-bold">Singularity</span>
+											</div>
+											<span class="text-secondary font-data-mono text-body-md"
+												>+9.1%</span
+											>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Layer 2 Card -->
+							<div
+								class="glass-panel rounded-xl overflow-hidden flex flex-col hover:border-primary/50 transition-all"
+							>
+								<div
+									class="p-widget-padding flex justify-between items-start bg-surface-container-high/50"
+								>
+									<div>
+										<h4 class="text-headline-sm font-bold">Layer 2s</h4>
+										<div class="flex items-center gap-2 mt-1">
+											<div
+												class="flex gap-1 h-1.5 w-16 bg-surface-container rounded-full overflow-hidden"
+											>
+												<div class="h-full bg-secondary w-[45%]"></div>
+											</div>
+											<span class="text-label-md text-on-surface-variant"
+												>Neutral Heat</span
+											>
+										</div>
+									</div>
+									<div class="text-right">
+										<span class="text-headline-sm font-data-mono text-secondary"
+											>+2.15%</span
+										>
+										<span class="text-body-sm text-on-surface-variant block"
+											>Avg Change</span
+										>
+									</div>
+								</div>
+								<div class="p-widget-padding flex-1">
+									<span
+										class="text-label-md text-on-surface-variant uppercase tracking-wider mb-stack-compact block"
+										>Leading Tokens (龙头币种)</span
+									>
+									<div class="space-y-stack-compact">
+										<div
+											class="flex justify-between items-center py-2 border-b border-outline-variant/30"
+										>
+											<div class="flex items-center gap-2">
+												<div
+													class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary"
+												>
+													ARB
+												</div>
+												<span class="text-body-md font-bold">Arbitrum</span>
+											</div>
+											<span class="text-secondary font-data-mono text-body-md"
+												>+4.8%</span
+											>
+										</div>
+										<div
+											class="flex justify-between items-center py-2 border-b border-outline-variant/30"
+										>
+											<div class="flex items-center gap-2">
+												<div
+													class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary"
+												>
+													OP
+												</div>
+												<span class="text-body-md font-bold">Optimism</span>
+											</div>
+											<span class="text-error font-data-mono text-body-md"
+												>-1.2%</span
+											>
+										</div>
+										<div class="flex justify-between items-center py-2">
+											<div class="flex items-center gap-2">
+												<div
+													class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary"
+												>
+													STRK
+												</div>
+												<span class="text-body-md font-bold">Starknet</span>
+											</div>
+											<span class="text-secondary font-data-mono text-body-md"
+												>+3.4%</span
+											>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- DePIN Card -->
+							<div
+								class="glass-panel rounded-xl overflow-hidden flex flex-col hover:border-primary/50 transition-all"
+							>
+								<div
+									class="p-widget-padding flex justify-between items-start bg-surface-container-high/50"
+								>
+									<div>
+										<h4 class="text-headline-sm font-bold">DePIN</h4>
+										<div class="flex items-center gap-2 mt-1">
+											<div
+												class="flex gap-1 h-1.5 w-16 bg-surface-container rounded-full overflow-hidden"
+											>
+												<div class="h-full bg-secondary w-[60%]"></div>
+											</div>
+											<span class="text-label-md text-secondary"
+												>Rising Heat</span
+											>
+										</div>
+									</div>
+									<div class="text-right">
+										<span class="text-headline-sm font-data-mono text-secondary"
+											>+7.81%</span
+										>
+										<span class="text-body-sm text-on-surface-variant block"
+											>Avg Change</span
+										>
+									</div>
+								</div>
+								<div class="p-widget-padding flex-1">
+									<span
+										class="text-label-md text-on-surface-variant uppercase tracking-wider mb-stack-compact block"
+										>Leading Tokens (龙头币种)</span
+									>
+									<div class="space-y-stack-compact">
+										<div
+											class="flex justify-between items-center py-2 border-b border-outline-variant/30"
+										>
+											<div class="flex items-center gap-2">
+												<div
+													class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary"
+												>
+													HNT
+												</div>
+												<span class="text-body-md font-bold">Helium</span>
+											</div>
+											<span class="text-secondary font-data-mono text-body-md"
+												>+11.2%</span
+											>
+										</div>
+										<div class="flex justify-between items-center py-2">
+											<div class="flex items-center gap-2">
+												<div
+													class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary"
+												>
+													FIL
+												</div>
+												<span class="text-body-md font-bold">Filecoin</span>
+											</div>
+											<span class="text-secondary font-data-mono text-body-md"
+												>+2.5%</span
+											>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Modular Blank/Add Sector -->
+							<div
+								class="border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center min-h-[200px] hover:border-primary transition-all cursor-pointer group"
+							>
+								<span
+									class="material-symbols-outlined text-outline group-hover:text-primary transition-all text-4xl mb-2"
+									>add_circle</span
+								>
+								<span
+									class="text-label-md font-label-md text-on-surface-variant group-hover:text-primary"
+									>Monitor New Sector</span
+								>
+							</div>
+						</div>
+					</div>
+					<!-- Right Column: AI Macro Feed (M1.2) -->
+					<aside class="col-span-12 xl:col-span-4 flex flex-col gap-gutter">
+						<div
+							class="glass-panel rounded-xl flex flex-col h-full ai-border min-h-[600px]"
+						>
+							<div
+								class="p-widget-padding border-b border-outline-variant flex items-center justify-between"
+							>
+								<div class="flex items-center gap-2">
+									<span class="material-symbols-outlined text-primary"
+										>auto_awesome</span
+									>
+									<h3 class="text-headline-sm font-headline-sm">
+										AI Macro Feed
+									</h3>
+								</div>
+								<span
+									class="text-label-md bg-primary-container/20 text-primary px-3 py-1 rounded-full"
+									>Live</span
+								>
+							</div>
+							<div
+								class="flex-1 overflow-y-auto p-widget-padding space-y-gutter scrollbar-hide"
+							>
+								<!-- News Item 1 -->
+								<div
+									class="space-y-stack-compact border-l-2 border-secondary pl-4 py-1"
+								>
+									<div class="flex justify-between items-start">
+										<h5 class="text-body-md font-bold leading-tight">
+											US PCE Inflation Data Beats Expectations
+										</h5>
+										<span
+											class="text-body-sm text-on-surface-variant font-data-mono whitespace-nowrap"
+											>08:14</span
+										>
+									</div>
+									<div
+										class="inline-flex items-center gap-1 bg-secondary/10 text-secondary px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+									>
+										<span
+											class="material-symbols-outlined text-[12px]"
+											style="font-variation-settings: 'FILL' 1;"
+											>trending_up</span
+										>
+										Positive for BTC
+									</div>
+									<p
+										class="text-body-sm text-on-surface-variant bg-surface-container-high/50 p-2 rounded italic"
+									>
+										<span class="font-bold text-on-surface">AI 解读:</span>
+										Inflation cooling faster than forecasted strengthens the
+										case for Q3 rate cuts, increasing liquidity for risk assets.
+									</p>
+								</div>
+								<!-- News Item 2 -->
+								<div
+									class="space-y-stack-compact border-l-2 border-error pl-4 py-1"
+								>
+									<div class="flex justify-between items-start">
+										<h5 class="text-body-md font-bold leading-tight">
+											Central Bank of EU Maintains Hawkish Stance
+										</h5>
+										<span
+											class="text-body-sm text-on-surface-variant font-data-mono whitespace-nowrap"
+											>07:45</span
+										>
+									</div>
+									<div
+										class="inline-flex items-center gap-1 bg-error/10 text-error px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+									>
+										<span
+											class="material-symbols-outlined text-[12px]"
+											style="font-variation-settings: 'FILL' 1;"
+											>warning</span
+										>
+										Macro Risk
+									</div>
+									<p
+										class="text-body-sm text-on-surface-variant bg-surface-container-high/50 p-2 rounded italic"
+									>
+										<span class="font-bold text-on-surface">AI 解读:</span>
+										Lagarde's emphasis on "restrictive levels" suggests
+										Euro-liquidity might remain tight, potentially pressuring
+										Altcoin pairs.
+									</p>
+								</div>
+								<!-- News Item 3 -->
+								<div
+									class="space-y-stack-compact border-l-2 border-outline pl-4 py-1"
+								>
+									<div class="flex justify-between items-start">
+										<h5 class="text-body-md font-bold leading-tight">
+											Binance Receives VASP License in Dubai
+										</h5>
+										<span
+											class="text-body-sm text-on-surface-variant font-data-mono whitespace-nowrap"
+											>06:22</span
+										>
+									</div>
+									<div
+										class="inline-flex items-center gap-1 bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+									>
+										Neutral
+									</div>
+									<p
+										class="text-body-sm text-on-surface-variant bg-surface-container-high/50 p-2 rounded italic"
+									>
+										<span class="font-bold text-on-surface">AI 解读:</span>
+										Positive regulatory milestone, but already priced into
+										market; impact is primarily long-term institutional trust.
+									</p>
+								</div>
+								<!-- News Item 4 -->
+								<div
+									class="space-y-stack-compact border-l-2 border-secondary pl-4 py-1"
+								>
+									<div class="flex justify-between items-start">
+										<h5 class="text-body-md font-bold leading-tight">
+											Middle East Geopolitical De-escalation Signs
+										</h5>
+										<span
+											class="text-body-sm text-on-surface-variant font-data-mono whitespace-nowrap"
+											>05:10</span
+										>
+									</div>
+									<div
+										class="inline-flex items-center gap-1 bg-secondary/10 text-secondary px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+									>
+										Positive for BTC
+									</div>
+									<p
+										class="text-body-sm text-on-surface-variant bg-surface-container-high/50 p-2 rounded italic"
+									>
+										<span class="font-bold text-on-surface">AI 解读:</span>
+										Reduction in "black swan" risk lowers the volatility
+										premium, usually allowing BTC to resume trend-based
+										movement.
+									</p>
+								</div>
+							</div>
+							<div
+								class="p-4 border-t border-outline-variant bg-surface-container-lowest"
+							>
+								<button
+									class="w-full text-center py-2 text-label-md text-primary hover:underline transition-all"
+								>
+									View Full Macro Archive
+								</button>
+							</div>
+						</div>
+						<!-- Market Correlation Card -->
+						<div class="glass-panel p-widget-padding rounded-xl">
+							<h4
+								class="text-label-md font-label-md text-on-surface-variant uppercase tracking-widest mb-stack-default"
+							>
+								BTC Correlation (24h)
+							</h4>
+							<div class="space-y-stack-compact">
+								<div class="flex justify-between items-center">
+									<span class="text-body-md">S&amp;P 500</span>
+									<span class="text-secondary font-data-mono">0.82 (High)</span>
+								</div>
+								<div
+									class="w-full bg-surface-container h-1 rounded-full overflow-hidden"
+								>
+									<div class="bg-secondary h-full w-[82%]"></div>
+								</div>
+								<div class="flex justify-between items-center mt-4">
+									<span class="text-body-md">Gold (XAU)</span>
+									<span class="text-on-surface-variant font-data-mono"
+										>-0.14 (Low)</span
+									>
+								</div>
+								<div
+									class="w-full bg-surface-container h-1 rounded-full overflow-hidden"
+								>
+									<div class="bg-outline h-full w-[14%] translate-x-full"></div>
+								</div>
+							</div>
+						</div>
+					</aside>
+				</div>
+			</main>
+			<!-- Footer (Shared Component) -->
+			<footer
+				class="flex flex-col md:flex-row justify-between items-center py-4 px-container-margin w-full gap-stack-default bg-surface-container-lowest border-t border-outline-variant"
+			>
+				<div class="flex flex-col md:flex-row items-center gap-4">
+					<span class="text-label-md font-bold text-on-surface"
+						>NEXUS TRADING</span
+					>
+					<p class="text-body-sm text-on-surface-variant opacity-70">
+						© 2024 Nexus Trading Systems. High risk investment warning: Trading
+						involves significant risk of loss.
+					</p>
+				</div>
+				<div class="flex gap-6">
+					<a
+						class="text-label-md font-label-md text-on-surface-variant opacity-70 hover:text-on-surface transition-colors"
+						href="#"
+						>Risk Disclosure</a
+					>
+					<a
+						class="text-label-md font-label-md text-on-surface-variant opacity-70 hover:text-on-surface transition-colors"
+						href="#"
+						>Terms of Service</a
+					>
+					<a
+						class="text-label-md font-label-md text-on-surface-variant opacity-70 hover:text-on-surface transition-colors"
+						href="#"
+						>Privacy Policy</a
+					>
+				</div>
+			</footer>
+		</div>
+		<!-- Micro-interaction Script -->
+		<script>
+		"use strict";
+		document.querySelectorAll(".glass-panel").forEach((card) => {
+			card.addEventListener("mouseenter", () => {
+				card.style.transform = "translateY(-2px)";
+				card.style.boxShadow = "0 10px 25px -5px rgba(0, 0, 0, 0.3)";
+			});
+			card.addEventListener("mouseleave", () => {
+				card.style.transform = "translateY(0)";
+				card.style.boxShadow = "none";
+			});
+		});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta content="width=device-width, initial-scale=1.0" name="viewport">
+		<title>Nexus Terminal | Binance Alpha Strategy</title>
+		<script
+			src="https://cdn.tailwindcss.com?plugins=forms,container-queries"
+		></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+			rel="stylesheet"
+		>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		>
+		<script id="tailwind-config">
+		"use strict";
+		tailwind.config = {
+			darkMode: "class",
+			theme: {
+				extend: {
+					colors: {
+						"on-tertiary-fixed": "#410004",
+						"on-tertiary-fixed-variant": "#930013",
+						"on-background": "#dae2fd",
+						"on-primary": "#002a78",
+						"surface-container-low": "#131b2e",
+						"tertiary-fixed-dim": "#ffb3ad",
+						"secondary-fixed-dim": "#4edea3",
+						"tertiary-fixed": "#ffdad7",
+						"secondary-container": "#00a572",
+						"on-tertiary": "#68000a",
+						"surface-container": "#171f33",
+						"tertiary-container": "#cf2c30",
+						"inverse-on-surface": "#283044",
+						"inverse-surface": "#dae2fd",
+						"on-secondary-container": "#00311f",
+						background: "#0b1326",
+						primary: "#b4c5ff",
+						"on-secondary-fixed-variant": "#005236",
+						surface: "#0b1326",
+						"primary-container": "#2563eb",
+						"surface-container-highest": "#2d3449",
+						"primary-fixed-dim": "#b4c5ff",
+						"surface-bright": "#31394d",
+						"on-secondary": "#003824",
+						"on-tertiary-container": "#ffecea",
+						"on-surface-variant": "#c3c6d7",
+						"on-surface": "#dae2fd",
+						"on-error": "#690005",
+						"error-container": "#93000a",
+						"surface-container-high": "#222a3d",
+						secondary: "#4edea3",
+						"on-primary-fixed-variant": "#003ea8",
+						"on-secondary-fixed": "#002113",
+						"outline-variant": "#434655",
+						"on-primary-container": "#eeefff",
+						"secondary-fixed": "#6ffbbe",
+						"surface-tint": "#b4c5ff",
+						"primary-fixed": "#dbe1ff",
+						outline: "#8d90a0",
+						"surface-dim": "#0b1326",
+						error: "#ffb4ab",
+						"on-primary-fixed": "#00174b",
+						"surface-variant": "#2d3449",
+						"surface-container-lowest": "#060e20",
+						tertiary: "#ffb3ad",
+						"on-error-container": "#ffdad6",
+						"inverse-primary": "#0053db",
+					},
+					borderRadius: {
+						DEFAULT: "0.125rem",
+						lg: "0.25rem",
+						xl: "0.5rem",
+						full: "0.75rem",
+					},
+					spacing: {
+						"stack-compact": "8px",
+						"stack-default": "16px",
+						unit: "4px",
+						gutter: "16px",
+						"container-margin": "24px",
+						"widget-padding": "20px",
+					},
+					fontFamily: {
+						"headline-md": ["Inter"],
+						"body-md": ["Inter"],
+						"headline-sm": ["Inter"],
+						"headline-lg": ["Inter"],
+						"body-lg": ["Inter"],
+						"label-md": ["Inter"],
+						"display-lg": ["Inter"],
+						"data-mono": ["Inter"],
+						"body-sm": ["Inter"],
+					},
+					fontSize: {
+						"headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+						"body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+						"headline-sm": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+						"headline-lg": [
+							"32px",
+							{
+								lineHeight: "40px",
+								letterSpacing: "-0.01em",
+								fontWeight: "600",
+							},
+						],
+						"body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+						"label-md": [
+							"12px",
+							{
+								lineHeight: "16px",
+								letterSpacing: "0.05em",
+								fontWeight: "600",
+							},
+						],
+						"display-lg": [
+							"48px",
+							{
+								lineHeight: "56px",
+								letterSpacing: "-0.02em",
+								fontWeight: "700",
+							},
+						],
+						"data-mono": ["14px", { lineHeight: "20px", fontWeight: "500" }],
+						"body-sm": ["12px", { lineHeight: "16px", fontWeight: "400" }],
+					},
+				},
+			},
+		};
+		</script>
+		<style>
+		body {
+			font-family: "Inter", sans-serif;
+			color: #dae2fd;
+			background-color: #0b1326;
+		}
+		.material-symbols-outlined {
+			font-variation-settings:
+				"FILL" 0,
+				"wght" 400,
+				"GRAD" 0,
+				"opsz" 24;
+		}
+		.glass-panel {
+			background: rgba(15, 23, 42, 0.6);
+			border: 1px solid #1e293b;
+			backdrop-filter: blur(20px);
+		}
+		.ai-gradient-border {
+			position: relative;
+			background: #0f172a;
+			border-radius: 0.25rem;
+		}
+		.ai-gradient-border::before {
+			position: absolute;
+			inset: -1px;
+			padding: 1px;
+			pointer-events: none;
+			content: "";
+			background: linear-gradient(to bottom right, #b4c5ff, transparent);
+			border-radius: 0.25rem;
+			-webkit-mask:
+				linear-gradient(#fff 0 0) content-box,
+				linear-gradient(#fff 0 0);
+			-webkit-mask-composite: xor;
+			mask-composite: exclude;
+		}
+		.scrollbar-hide::-webkit-scrollbar {
+			display: none;
+		}
+		.candlestick-up {
+			fill: #4edea3;
+		}
+		.candlestick-down {
+			fill: #cf2c30;
+		}
+		</style>
+	</head>
+	<body class="flex min-h-screen overflow-hidden">
+		<!-- SideNavBar -->
+		<aside
+			class="fixed left-0 h-full w-64 bg-surface-container border-r border-outline-variant flex flex-col z-50"
+		>
+			<div class="p-6">
+				<h1 class="text-headline-sm font-headline-sm font-bold text-primary">
+					Nexus Trading
+				</h1>
+				<p
+					class="text-label-md font-label-md text-on-surface-variant opacity-70"
+				>
+					Institutional Grade
+				</p>
+			</div>
+			<nav class="flex-1 px-3 space-y-1">
+				<a
+					class="flex items-center gap-3 px-3 py-3 rounded text-on-surface-variant hover:bg-surface-bright transition-colors transition-transform scale-95 active:scale-90"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="insights"
+						>insights</span
+					>
+					<span class="text-label-md font-label-md">Insights</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-3 py-3 rounded text-primary border-r-2 border-primary bg-primary-container/10 transition-colors"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="tactic"
+						>tactic</span
+					>
+					<span class="text-label-md font-label-md">Strategy</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-3 py-3 rounded text-on-surface-variant hover:bg-surface-bright transition-colors transition-transform scale-95 active:scale-90"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="terminal"
+						>terminal</span
+					>
+					<span class="text-label-md font-label-md">Execution</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-3 py-3 rounded text-on-surface-variant hover:bg-surface-bright transition-colors transition-transform scale-95 active:scale-90"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="history"
+						>history</span
+					>
+					<span class="text-label-md font-label-md">History</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-3 py-3 rounded text-on-surface-variant hover:bg-surface-bright transition-colors transition-transform scale-95 active:scale-90"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="analytics"
+						>analytics</span
+					>
+					<span class="text-label-md font-label-md">Analysis</span>
+				</a>
+			</nav>
+			<div class="mt-auto px-4 py-4">
+				<button
+					class="w-full bg-primary-container text-on-primary-container py-3 rounded font-label-md flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+				>
+					<span class="material-symbols-outlined" data-icon="add">add</span>
+					New Strategy
+				</button>
+			</div>
+			<div class="p-4 border-t border-outline-variant space-y-1">
+				<a
+					class="flex items-center gap-3 px-3 py-2 text-on-surface-variant opacity-70 hover:opacity-100 transition-opacity"
+					href="#"
+				>
+					<span
+						class="material-symbols-outlined text-[20px]"
+						data-icon="settings"
+						>settings</span
+					>
+					<span class="text-label-md">Settings</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-3 py-2 text-on-surface-variant opacity-70 hover:opacity-100 transition-opacity"
+					href="#"
+				>
+					<span
+						class="material-symbols-outlined text-[20px]"
+						data-icon="help_outline"
+						>help_outline</span
+					>
+					<span class="text-label-md">Support</span>
+				</a>
+			</div>
+		</aside>
+		<!-- Main Content Area -->
+		<main class="flex-1 ml-64 flex flex-col h-screen">
+			<!-- TopNavBar -->
+			<header
+				class="fixed top-0 right-0 left-64 h-16 bg-surface/80 backdrop-blur-md border-b border-outline-variant flex items-center justify-between px-container-margin z-40"
+			>
+				<div class="flex items-center gap-8">
+					<span
+						class="text-headline-md font-headline-md font-black tracking-tight text-primary"
+						>Nexus Terminal</span
+					>
+					<div class="relative group">
+						<span
+							class="absolute inset-y-0 left-3 flex items-center text-outline"
+						>
+							<span class="material-symbols-outlined text-sm" data-icon="search"
+								>search</span
+							>
+						</span>
+						<input
+							class="bg-surface-container-high border-none rounded-full pl-10 pr-4 py-1.5 text-body-sm focus:ring-1 focus:ring-primary w-64 transition-all"
+							placeholder="Search Markets..."
+							type="text"
+						>
+					</div>
+				</div>
+				<div class="flex items-center gap-6">
+					<div class="flex items-center gap-2 text-label-md">
+						<span
+							class="w-2 h-2 rounded-full bg-secondary animate-pulse"
+						></span>
+						<span class="text-on-surface-variant">AI Agent: Active</span>
+					</div>
+					<div class="text-label-md text-on-surface-variant hidden xl:block">
+						API Connected: <span class="text-secondary">Binance</span>
+					</div>
+					<div class="flex items-center gap-4">
+						<button
+							class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all"
+							data-icon="notifications"
+						>
+							notifications
+						</button>
+						<button
+							class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all"
+							data-icon="account_balance_wallet"
+						>
+							account_balance_wallet
+						</button>
+						<div
+							class="w-8 h-8 rounded-full overflow-hidden border border-outline"
+						>
+							<img
+								alt="Trader Profile"
+								class="w-full h-full object-cover"
+								src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_MbH7Sdtc4nW0fz8gt19azuKmiAFsWn7tveFOfLFa89ATmeqL5B2CNN7hG6IciUrSorC57ZcWa9_vvkxBegvKqwz7Z0AIS_WeBaNbSGzD2xicSW9S4VPRv8CK5WJhqayBIAIc2JGbFJKvH9AK6HMuUvDQ6mqVsYCY73CiNF0t25TMrvNIrbwLviun53_DYsQi15ZZBRXDSz-guWbeYBF-HzYsO77D6vtZHnCXZh2Tn62OxRL8cGZjSrIeATbgf2Q1mvpYY5SiHdA"
+							>
+						</div>
+					</div>
+				</div>
+			</header>
+			<!-- Content Canvas -->
+			<div class="flex-1 pt-24 px-container-margin pb-8 overflow-y-auto">
+				<!-- Grid Layout -->
+				<div class="grid grid-cols-12 gap-gutter">
+					<!-- Strategy Card (Top Left) -->
+					<section
+						class="col-span-12 lg:col-span-4 flex flex-col gap-stack-default"
+					>
+						<div
+							class="ai-gradient-border p-widget-padding flex flex-col gap-stack-default min-h-[300px]"
+						>
+							<div class="flex justify-between items-start">
+								<div>
+									<span
+										class="bg-primary/10 text-primary text-[10px] uppercase tracking-widest px-2 py-0.5 rounded border border-primary/20"
+										>Active Strategy</span
+									>
+									<h2 class="text-headline-sm font-headline-sm mt-2">
+										Binance Alpha Fixed Investment
+									</h2>
+								</div>
+								<span
+									class="material-symbols-outlined text-primary"
+									data-icon="auto_awesome"
+									>auto_awesome</span
+								>
+							</div>
+							<div class="space-y-3">
+								<p class="text-body-md text-on-surface-variant">
+									Core Logic:
+									<span class="text-on-surface font-medium"
+										>Bottom Consolidation</span
+									>. This strategy identifies high-utility tokens that have
+									traded within a ±5% range for over 14 days following a major
+									drawdown.
+								</p>
+								<div class="grid grid-cols-2 gap-4 pt-2">
+									<div class="bg-surface-container-low p-3 rounded">
+										<div
+											class="text-label-md text-on-surface-variant uppercase opacity-60"
+										>
+											Avg. Holding
+										</div>
+										<div class="text-headline-sm font-data-mono">42 Days</div>
+									</div>
+									<div class="bg-surface-container-low p-3 rounded">
+										<div
+											class="text-label-md text-on-surface-variant uppercase opacity-60"
+										>
+											Risk Profile
+										</div>
+										<div class="text-headline-sm font-data-mono text-secondary">
+											Moderate
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="mt-auto pt-4 flex flex-col gap-2">
+								<div
+									class="flex items-center gap-2 text-body-sm text-on-surface-variant"
+								>
+									<span
+										class="material-symbols-outlined text-[16px]"
+										data-icon="check_circle"
+										>check_circle</span
+									>
+									Auto-rebalancing enabled
+								</div>
+								<div
+									class="flex items-center gap-2 text-body-sm text-on-surface-variant"
+								>
+									<span
+										class="material-symbols-outlined text-[16px]"
+										data-icon="check_circle"
+										>check_circle</span
+									>
+									BTC Correlation filter: 0.65
+								</div>
+							</div>
+						</div>
+						<!-- Risk Warning -->
+						<div
+							class="bg-error-container/10 border border-error/20 p-4 rounded-xl flex gap-3"
+						>
+							<span
+								class="material-symbols-outlined text-error"
+								data-icon="warning"
+								>warning</span
+							>
+							<div>
+								<div class="text-label-md font-bold text-error uppercase">
+									Risk Disclosure
+								</div>
+								<p
+									class="text-body-sm text-on-surface-variant mt-1 leading-relaxed"
+								>
+									Strategy assumptions rely on historical mean reversion. Past
+									performance does not guarantee future results. Liquidity risks
+									may affect execution in volatile markets.
+								</p>
+							</div>
+						</div>
+					</section>
+					<!-- Candidate List (Top Right) -->
+					<section class="col-span-12 lg:col-span-8">
+						<div
+							class="bg-surface-container rounded-xl border border-outline-variant overflow-hidden h-full"
+						>
+							<div
+								class="px-6 py-4 border-b border-outline-variant flex justify-between items-center"
+							>
+								<h3 class="text-headline-sm font-headline-sm">
+									Alpha Candidates
+								</h3>
+								<div class="flex gap-2">
+									<button
+										class="px-3 py-1 bg-surface-bright rounded text-label-md text-on-surface-variant border border-outline-variant"
+									>
+										Filter
+									</button>
+									<button
+										class="px-3 py-1 bg-surface-bright rounded text-label-md text-on-surface-variant border border-outline-variant"
+									>
+										Export
+									</button>
+								</div>
+							</div>
+							<div class="overflow-x-auto">
+								<table class="w-full text-left">
+									<thead class="bg-surface-container-high">
+										<tr class="text-label-md text-on-surface-variant uppercase">
+											<th class="px-6 py-4 font-semibold">Token</th>
+											<th class="px-6 py-4 font-semibold">Days in Bottom</th>
+											<th class="px-6 py-4 font-semibold">Volatility Score</th>
+											<th class="px-6 py-4 font-semibold text-right">
+												AI Confidence
+											</th>
+										</tr>
+									</thead>
+									<tbody class="divide-y divide-outline-variant">
+										<tr
+											class="hover:bg-surface-bright cursor-pointer group transition-colors"
+										>
+											<td class="px-6 py-4">
+												<div class="flex items-center gap-3">
+													<div
+														class="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center font-bold text-primary text-xs"
+													>
+														ALT
+													</div>
+													<div>
+														<div class="text-body-md font-semibold">ALT</div>
+														<div class="text-body-sm text-on-surface-variant">
+															AltLayer
+														</div>
+													</div>
+												</div>
+											</td>
+											<td class="px-6 py-4 text-body-md font-data-mono">
+												24 Days
+											</td>
+											<td class="px-6 py-4">
+												<div class="flex items-center gap-2">
+													<div
+														class="w-16 h-1.5 bg-surface-container-highest rounded-full overflow-hidden"
+													>
+														<div
+															class="bg-secondary h-full"
+															style="width: 22%"
+														></div>
+													</div>
+													<span
+														class="text-body-sm font-data-mono text-secondary"
+														>Low</span
+													>
+												</div>
+											</td>
+											<td class="px-6 py-4 text-right">
+												<div
+													class="inline-flex items-center gap-1 bg-secondary/10 text-secondary px-2 py-0.5 rounded text-body-sm font-data-mono"
+												>
+													94.2%
+												</div>
+											</td>
+										</tr>
+										<tr
+											class="bg-primary/5 hover:bg-primary/10 cursor-pointer group transition-colors border-l-4 border-l-primary"
+										>
+											<td class="px-6 py-4">
+												<div class="flex items-center gap-3">
+													<div
+														class="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center font-bold text-primary text-xs"
+													>
+														MANTA
+													</div>
+													<div>
+														<div class="text-body-md font-semibold">MANTA</div>
+														<div class="text-body-sm text-on-surface-variant">
+															Manta Network
+														</div>
+													</div>
+												</div>
+											</td>
+											<td
+												class="px-6 py-4 text-body-md font-data-mono text-primary font-bold"
+											>
+												31 Days
+											</td>
+											<td class="px-6 py-4">
+												<div class="flex items-center gap-2">
+													<div
+														class="w-16 h-1.5 bg-surface-container-highest rounded-full overflow-hidden"
+													>
+														<div
+															class="bg-secondary h-full"
+															style="width: 15%"
+														></div>
+													</div>
+													<span
+														class="text-body-sm font-data-mono text-secondary"
+														>Low</span
+													>
+												</div>
+											</td>
+											<td class="px-6 py-4 text-right">
+												<div
+													class="inline-flex items-center gap-1 bg-secondary/10 text-secondary px-2 py-0.5 rounded text-body-sm font-data-mono"
+												>
+													91.8%
+												</div>
+											</td>
+										</tr>
+										<tr
+											class="hover:bg-surface-bright cursor-pointer group transition-colors"
+										>
+											<td class="px-6 py-4">
+												<div class="flex items-center gap-3">
+													<div
+														class="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center font-bold text-primary text-xs"
+													>
+														JUP
+													</div>
+													<div>
+														<div class="text-body-md font-semibold">JUP</div>
+														<div class="text-body-sm text-on-surface-variant">
+															Jupiter
+														</div>
+													</div>
+												</div>
+											</td>
+											<td class="px-6 py-4 text-body-md font-data-mono">
+												18 Days
+											</td>
+											<td class="px-6 py-4">
+												<div class="flex items-center gap-2">
+													<div
+														class="w-16 h-1.5 bg-surface-container-highest rounded-full overflow-hidden"
+													>
+														<div
+															class="bg-tertiary h-full"
+															style="width: 65%"
+														></div>
+													</div>
+													<span
+														class="text-body-sm font-data-mono text-tertiary"
+														>Mid</span
+													>
+												</div>
+											</td>
+											<td class="px-6 py-4 text-right">
+												<div
+													class="inline-flex items-center gap-1 bg-secondary/10 text-secondary px-2 py-0.5 rounded text-body-sm font-data-mono"
+												>
+													88.4%
+												</div>
+											</td>
+										</tr>
+										<tr
+											class="hover:bg-surface-bright cursor-pointer group transition-colors"
+										>
+											<td class="px-6 py-4">
+												<div class="flex items-center gap-3">
+													<div
+														class="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center font-bold text-primary text-xs"
+													>
+														TIA
+													</div>
+													<div>
+														<div class="text-body-md font-semibold">TIA</div>
+														<div class="text-body-sm text-on-surface-variant">
+															Celestia
+														</div>
+													</div>
+												</div>
+											</td>
+											<td class="px-6 py-4 text-body-md font-data-mono">
+												15 Days
+											</td>
+											<td class="px-6 py-4">
+												<div class="flex items-center gap-2">
+													<div
+														class="w-16 h-1.5 bg-surface-container-highest rounded-full overflow-hidden"
+													>
+														<div
+															class="bg-error h-full"
+															style="width: 82%"
+														></div>
+													</div>
+													<span class="text-body-sm font-data-mono text-error"
+														>High</span
+													>
+												</div>
+											</td>
+											<td class="px-6 py-4 text-right">
+												<div
+													class="inline-flex items-center gap-1 bg-secondary/10 text-secondary px-2 py-0.5 rounded text-body-sm font-data-mono"
+												>
+													79.2%
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</section>
+					<!-- Detail Panel (Bottom) -->
+					<section class="col-span-12 grid grid-cols-12 gap-gutter">
+						<!-- Price Chart Widget -->
+						<div
+							class="col-span-12 lg:col-span-8 bg-surface-container rounded-xl border border-outline-variant p-widget-padding"
+						>
+							<div class="flex justify-between items-center mb-6">
+								<div class="flex items-center gap-4">
+									<h3 class="text-headline-sm font-headline-sm">
+										MANTA / USDT
+									</h3>
+									<div class="flex items-center gap-1 text-secondary">
+										<span
+											class="material-symbols-outlined text-[18px]"
+											data-icon="trending_up"
+											>trending_up</span
+										>
+										<span class="text-body-sm font-data-mono">+2.45%</span>
+									</div>
+								</div>
+								<div class="flex bg-surface-container-high rounded p-1">
+									<button
+										class="px-3 py-1 text-label-md text-on-surface rounded bg-surface-bright"
+									>
+										1H
+									</button>
+									<button
+										class="px-3 py-1 text-label-md text-on-surface-variant"
+									>
+										4H
+									</button>
+									<button
+										class="px-3 py-1 text-label-md text-on-surface-variant"
+									>
+										1D
+									</button>
+								</div>
+							</div>
+							<!-- Mock Price Chart -->
+							<div
+								class="relative w-full h-64 bg-surface-container-lowest/50 rounded flex items-end justify-between px-4 pb-8 overflow-hidden group"
+							>
+								<!-- Accumulation Zone Highlight -->
+								<div
+									class="absolute bottom-10 left-1/4 right-0 h-16 bg-primary/5 border-y border-dashed border-primary/30 flex items-center justify-center"
+								>
+									<span
+										class="text-[10px] uppercase tracking-widest text-primary font-bold opacity-60"
+										>Accumulation Zone</span
+									>
+								</div>
+								<!-- Candlesticks Mockup -->
+								<div class="flex items-end gap-2 w-full h-full pt-10">
+									<div class="w-full flex items-end justify-around gap-1">
+										<div
+											class="w-3 bg-tertiary-container h-[40%] rounded-t-sm"
+										></div>
+										<div
+											class="w-3 bg-tertiary-container h-[60%] rounded-t-sm"
+										></div>
+										<div
+											class="w-3 bg-secondary-container h-[30%] rounded-t-sm"
+										></div>
+										<div
+											class="w-3 bg-tertiary-container h-[70%] rounded-t-sm"
+										></div>
+										<div
+											class="w-3 bg-secondary-container h-[45%] rounded-t-sm"
+										></div>
+										<div
+											class="w-3 bg-tertiary-container h-[55%] rounded-t-sm"
+										></div>
+										<div
+											class="w-3 bg-secondary-container h-[20%] rounded-t-sm"
+										></div>
+										<!-- Flat Consolidation -->
+										<div
+											class="w-3 bg-secondary-container h-[15%] rounded-t-sm animate-pulse shadow-[0_0_10px_rgba(78,222,163,0.2)]"
+										></div>
+										<div
+											class="w-3 bg-tertiary-container h-[14%] rounded-t-sm"
+										></div>
+										<div
+											class="w-3 bg-secondary-container h-[16%] rounded-t-sm"
+										></div>
+										<div
+											class="w-3 bg-tertiary-container h-[15%] rounded-t-sm"
+										></div>
+										<div
+											class="w-3 bg-secondary-container h-[17%] rounded-t-sm"
+										></div>
+										<div
+											class="w-3 bg-secondary-container h-[18%] rounded-t-sm"
+										></div>
+										<div
+											class="w-3 bg-secondary-container h-[20%] rounded-t-sm"
+										></div>
+									</div>
+								</div>
+								<!-- Gridlines Overlay -->
+								<div class="absolute inset-0 pointer-events-none opacity-10">
+									<div class="w-full h-px bg-outline absolute top-1/4"></div>
+									<div class="w-full h-px bg-outline absolute top-1/2"></div>
+									<div class="w-full h-px bg-outline absolute top-3/4"></div>
+								</div>
+							</div>
+						</div>
+						<!-- Thesis Panel -->
+						<div
+							class="col-span-12 lg:col-span-4 flex flex-col gap-stack-default"
+						>
+							<div
+								class="ai-gradient-border p-widget-padding flex-1 flex flex-col"
+							>
+								<div class="flex items-center gap-2 mb-4">
+									<span
+										class="material-symbols-outlined text-primary text-[20px]"
+										data-icon="psychology"
+										>psychology</span
+									>
+									<h4
+										class="text-label-md font-bold uppercase tracking-widest text-primary"
+									>
+										AI Investment Thesis
+									</h4>
+								</div>
+								<div
+									class="text-body-md text-on-surface-variant space-y-4 leading-relaxed"
+								>
+									<p>
+										MANTA has entered a
+										<span class="text-on-surface font-semibold"
+											>Multi-Week Stability Phase</span
+										>. Institutional order flow indicates massive absorbency
+										near the $1.20 floor.
+									</p>
+									<p>
+										Volatility is at a 90-day low, historically preceding a
+										<span class="text-secondary font-semibold"
+											>volatility breakout</span
+										>
+										of 15%+. Correlation with BTC remains low (0.42), offering
+										strong diversification alpha.
+									</p>
+								</div>
+								<div class="mt-auto pt-6 flex flex-col gap-3">
+									<button
+										class="w-full bg-primary text-on-primary py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/20"
+									>
+										<span class="material-symbols-outlined" data-icon="queue"
+											>queue</span
+										>
+										Add to Execution Queue
+									</button>
+									<div class="text-center">
+										<span
+											class="text-label-md text-on-surface-variant opacity-50"
+											>Estimated Entry: $1.24 - $1.28</span
+										>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+			<!-- Footer -->
+			<footer
+				class="h-14 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between px-container-margin shrink-0"
+			>
+				<div class="text-body-sm text-on-surface-variant/70 max-w-2xl">
+					© 2024 Nexus Trading Systems. High risk investment warning: Trading
+					involves significant risk of loss.
+				</div>
+				<div class="flex items-center gap-6">
+					<a
+						class="text-label-md text-on-surface-variant opacity-70 hover:text-on-surface transition-colors"
+						href="#"
+						>Risk Disclosure</a
+					>
+					<a
+						class="text-label-md text-on-surface-variant opacity-70 hover:text-on-surface transition-colors"
+						href="#"
+						>Terms of Service</a
+					>
+					<a
+						class="text-label-md text-on-surface-variant opacity-70 hover:text-on-surface transition-colors"
+						href="#"
+						>Privacy Policy</a
+					>
+				</div>
+			</footer>
+		</main>
+		<!-- Floating Action Element (Hidden on mobile) -->
+		<div class="fixed bottom-24 right-8 z-50">
+			<button
+				class="bg-secondary text-on-secondary-container w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:scale-105 transition-transform group"
+			>
+				<span class="material-symbols-outlined" data-icon="chat_bubble"
+					>chat_bubble</span
+				>
+				<span
+					class="absolute right-16 bg-surface-container border border-outline-variant px-4 py-2 rounded-lg text-label-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+				>
+					Ask Strategy Agent
+				</span>
+			</button>
+		</div>
+		<script>
+		"use strict";
+		// Micro-interaction for table rows
+		document.querySelectorAll("tbody tr").forEach((row) => {
+			row.addEventListener("click", () => {
+				// Remove active classes
+				document.querySelectorAll("tbody tr").forEach((r) => {
+					r.classList.remove("bg-primary/5", "border-l-4", "border-l-primary");
+					r.classList.add("hover:bg-surface-bright");
+				});
+				// Add to current
+				row.classList.add("bg-primary/5", "border-l-4", "border-l-primary");
+				row.classList.remove("hover:bg-surface-bright");
+
+				// Simulation: Update "Token" label in detail view
+				const tokenName = row.querySelector(".text-body-md").innerText;
+				document.querySelector("h3.text-headline-sm").innerText =
+					`${tokenName} / USDT`;
+			});
+		});
+
+		// Simple animation for the "Alpha Agent" status
+		setInterval(() => {
+			const pulse = document.querySelector(".animate-pulse");
+			if (pulse) {
+				pulse.style.opacity = pulse.style.opacity === "0.5" ? "1" : "0.5";
+			}
+		}, 1000);
+		</script>
+	</body>
+</html>

@@ -9,7 +9,9 @@
       "default": "./src/*.ts"
     }
   },
-  "scripts": {},
+  "scripts": {
+    "test": "vitest run"
+  },
   "dependencies": {
     "@coin-pilot/auth": "workspace:*",
     "@coin-pilot/db": "workspace:*",
@@ -24,6 +26,7 @@
   "devDependencies": {
     "@coin-pilot/config": "workspace:*",
     "hono": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "^4.1.9"
   }
 }
