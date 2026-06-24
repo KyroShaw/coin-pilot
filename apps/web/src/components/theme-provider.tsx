@@ -1,11 +1,12 @@
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import * as React from "react";
+import type * as React from "react";
 
 export function ThemeProvider({
-  children,
-  ...props
+	children,
+	...props
 }: React.ComponentProps<typeof NextThemesProvider>) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
+	return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }
 
+// biome-ignore lint/performance/noBarrelFile: 透传 next-themes 的 useTheme，便于统一从本组件导入
 export { useTheme } from "next-themes";
