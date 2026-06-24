@@ -8,6 +8,7 @@ export default function Header() {
 		{ to: "/sectors", label: "板块轮动" },
 		{ to: "/alpha", label: "Alpha 候选" },
 		{ to: "/orders", label: "订单复盘" },
+		{ to: "/equity", label: "资金曲线" },
 		{ to: "/news", label: "宏观简报" },
 		{ to: "/binance", label: "API 绑定" },
 	] as const;

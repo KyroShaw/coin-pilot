@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-
 import dotenv from "dotenv";
+import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 
 // 与 drizzle.config 一致：从 server 的 .env 读取 DATABASE_URL
@@ -412,10 +412,11 @@ interface OrderDef {
 }
 
 const ORDERS: OrderDef[] = [
-	{ symbol: "BTCUSDT", side: "LONG", pnl: 152.4, daysAgo: 2 },
+	// 最近 3 笔连亏，触发默认阈值(3)的亏损预警以便演示 F-006 横幅
+	{ symbol: "BTCUSDT", side: "LONG", pnl: -85.2, daysAgo: 2 },
 	{ symbol: "ETHUSDT", side: "SHORT", pnl: -68.1, daysAgo: 5 },
-	{ symbol: "SOLUSDT", side: "LONG", pnl: 240.0, daysAgo: 9 },
-	{ symbol: "BNBUSDT", side: "LONG", pnl: -45.5, daysAgo: 14 },
+	{ symbol: "SOLUSDT", side: "LONG", pnl: -130.0, daysAgo: 9 },
+	{ symbol: "BNBUSDT", side: "LONG", pnl: 45.5, daysAgo: 14 },
 	{ symbol: "ARBUSDT", side: "SHORT", pnl: 33.2, daysAgo: 20 },
 	{ symbol: "DOGEUSDT", side: "LONG", pnl: -120.7, daysAgo: 27 },
 	{ symbol: "LINKUSDT", side: "LONG", pnl: 88.9, daysAgo: 35 },
@@ -445,8 +446,9 @@ async function seedOrders(): Promise<number> {
 	const inserted = await db
 		.insert(closedOrder)
 		.values(rows)
-		.onConflictDoNothing({
+		.onConflictDoUpdate({
 			target: [closedOrder.userId, closedOrder.exchangeOrderId],
+			set: { pnl: sql`excluded.pnl`, side: sql`excluded.side` },
 		})
 		.returning({ id: closedOrder.id });
 	return inserted.length;

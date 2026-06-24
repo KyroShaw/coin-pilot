@@ -52,4 +52,12 @@
 - **订单同步口径**：基于合约 `GET /fapi/v1/income?incomeType=REALIZED_PNL` 跨币种、90 天按 7 天切片、`(userId,exchangeOrderId)` 唯一 `onConflictDoNothing` 幂等。**income 不含 entry/exit 价与 side**，故为占位（演示由 seed 补全）；如需补全用 `/fapi/v1/userTrades` 按 symbol 拉取（OQ）。futures base = `fapi.binance.com`，签名同 HMAC。
 - **用户数据隔离**：order/review 全 `protectedProcedure`；saveRationale 先校验订单归属再 upsert；review.generate 仅聚合 `userId AND inArray(orderIds)` 的订单；export 仅本人。后续 F-006 复用 `closed_order`（已含 `(userId,closedAt)` 索引）。
 - **三维度 prompt**：system prompt 固定 `## 执行质量 / ## 风险控制 / ## 改进建议`，满足 AC-005-3。
-- **seed 用户作用域数据**：`closed_order` 按首个已注册用户灌（无用户则跳过）。先注册账号再 `pnpm db:seed` 才会有演示订单。
+- **seed 用户作用域数据**：`closed_order` 按首个已注册用户灌（无用户则跳过）。先注册账号再 `pnpm db:seed` 才会有演示订单。seed 用 `onConflictDoUpdate(set: sql\`excluded.*\`)` 才能在重跑时刷新已存在行（`DoNothing` 不更新）。
+
+## 2026-06-25 — F-006 资金曲线与风险预警
+
+- **复用 closed_order**：曲线/streak 直接消费 F-005 的 `closed_order`（不建订单表）。`lib/equity.ts` 纯函数 `detectStreaks`（末端连续同号、0 中断）+ `buildEquityCurve`（按 closedAt 升序累计 + day/week 桶聚合，UTC 周一为周起点），6 单测覆盖临界。
+- **路由组织**：`routers/equity.ts` 一个文件导出 `equityRouter`/`alertRouter`/`settingsRouter` 三个，分别合并为 `equity`/`alert`/`settings` 命名空间。阈值未配置回落 3/5，`updateThreshold` zod `int().min(2).max(10)` + `(userId)` upsert。
+- **冷静提示**：`services/coaching.ts` 仅预警后按需，样本 <3 返回兜底文案不调 AI；opus-4-8 adaptive thinking 流式内部生成（同 F-005 mutation 模式）。
+- **图表**：前端引入 **recharts**（`pnpm -F web add recharts`），`LineChart` 渲染 cumulativePnl，深色 contentStyle，曲线终值正绿负红。无 shadcn Alert/Tabs，预警横幅与天/周/preset 切换用自定义按钮。
+- **演示连亏**：seed 把最近 3 笔订单设为亏损以触发默认阈值(3)的亏损预警横幅。
