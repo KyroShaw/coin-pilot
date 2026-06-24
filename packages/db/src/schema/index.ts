@@ -3,4 +3,5 @@ export * from "./alpha";
 export * from "./auth";
 export * from "./binance";
 export * from "./news";
+export * from "./order";
 export * from "./sector";

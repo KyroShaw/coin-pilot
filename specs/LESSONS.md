@@ -45,3 +45,11 @@
 - **seed**：`pnpm db:seed` 已含 8 个 Alpha 项目（4 盘整/4 非），用于无真实抓取端点时的演示。
 - **@coin-pilot/ui 缺组件**：暂无 Popover/Tooltip/Table，依据展示用 `useState` 内联展开面板替代，避免引入新 ui 依赖。
 - **路由导航**：新功能页须在 `apps/web/src/components/header.tsx` 的 `links` 加入口，否则页面不可达（曾导致板块页看不到）。
+
+## 2026-06-24 — F-005 订单复盘
+
+- **复盘流式范围**：现有 tRPC 仅 `httpBatchLink`（无 subscription/SSE link）。`review.generate` 实现为 **mutation**：服务端用 `anthropic.messages.stream(...).finalMessage()`（opus-4-8 + adaptive thinking + `effort high`）内部流式生成规避超时 → 落库 `review_report` → 返回完整 markdown；前端 `<pre whitespace-pre-wrap>` 渲染 + clipboard 复制 + Blob 导出 .md。**浏览器逐字流式后续可加 SSE/subscription link**。
+- **订单同步口径**：基于合约 `GET /fapi/v1/income?incomeType=REALIZED_PNL` 跨币种、90 天按 7 天切片、`(userId,exchangeOrderId)` 唯一 `onConflictDoNothing` 幂等。**income 不含 entry/exit 价与 side**，故为占位（演示由 seed 补全）；如需补全用 `/fapi/v1/userTrades` 按 symbol 拉取（OQ）。futures base = `fapi.binance.com`，签名同 HMAC。
+- **用户数据隔离**：order/review 全 `protectedProcedure`；saveRationale 先校验订单归属再 upsert；review.generate 仅聚合 `userId AND inArray(orderIds)` 的订单；export 仅本人。后续 F-006 复用 `closed_order`（已含 `(userId,closedAt)` 索引）。
+- **三维度 prompt**：system prompt 固定 `## 执行质量 / ## 风险控制 / ## 改进建议`，满足 AC-005-3。
+- **seed 用户作用域数据**：`closed_order` 按首个已注册用户灌（无用户则跳过）。先注册账号再 `pnpm db:seed` 才会有演示订单。

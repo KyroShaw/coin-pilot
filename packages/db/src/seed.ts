@@ -11,10 +11,12 @@ import * as schema from "./schema";
 import {
 	alphaProject,
 	alphaScrapeStatus,
+	closedOrder,
 	newsItem,
 	sectorLeader,
 	sectorRefreshLog,
 	sectorSnapshot,
+	user,
 } from "./schema";
 
 const DATABASE_URL = process.env.DATABASE_URL;
@@ -25,6 +27,7 @@ if (!DATABASE_URL) {
 const db = drizzle(DATABASE_URL, { schema });
 
 const HOUR_MS = 60 * 60 * 1000;
+const DAY_MS = 24 * HOUR_MS;
 
 interface SectorDef {
 	name: string;
@@ -401,13 +404,62 @@ async function seedAlpha(): Promise<number> {
 	return ALPHA.length;
 }
 
+interface OrderDef {
+	daysAgo: number;
+	pnl: number;
+	side: "LONG" | "SHORT";
+	symbol: string;
+}
+
+const ORDERS: OrderDef[] = [
+	{ symbol: "BTCUSDT", side: "LONG", pnl: 152.4, daysAgo: 2 },
+	{ symbol: "ETHUSDT", side: "SHORT", pnl: -68.1, daysAgo: 5 },
+	{ symbol: "SOLUSDT", side: "LONG", pnl: 240.0, daysAgo: 9 },
+	{ symbol: "BNBUSDT", side: "LONG", pnl: -45.5, daysAgo: 14 },
+	{ symbol: "ARBUSDT", side: "SHORT", pnl: 33.2, daysAgo: 20 },
+	{ symbol: "DOGEUSDT", side: "LONG", pnl: -120.7, daysAgo: 27 },
+	{ symbol: "LINKUSDT", side: "LONG", pnl: 88.9, daysAgo: 35 },
+	{ symbol: "AVAXUSDT", side: "SHORT", pnl: -22.0, daysAgo: 48 },
+	{ symbol: "OPUSDT", side: "LONG", pnl: 61.3, daysAgo: 62 },
+	{ symbol: "TIAUSDT", side: "LONG", pnl: -95.4, daysAgo: 80 },
+];
+
+/**
+ * 演示订单按用户作用域，灌给首个已注册用户（若有）。
+ * 无用户则跳过——订单/复盘需先注册账号，再重跑 seed（或用真实 Key 同步）。
+ */
+async function seedOrders(): Promise<number> {
+	const [firstUser] = await db.select({ id: user.id }).from(user).limit(1);
+	if (!firstUser) {
+		return 0;
+	}
+	const now = Date.now();
+	const rows = ORDERS.map((o, i) => ({
+		userId: firstUser.id,
+		exchangeOrderId: `seed-order-${i + 1}`,
+		symbol: o.symbol,
+		side: o.side,
+		pnl: o.pnl,
+		closedAt: new Date(now - o.daysAgo * DAY_MS),
+	}));
+	const inserted = await db
+		.insert(closedOrder)
+		.values(rows)
+		.onConflictDoNothing({
+			target: [closedOrder.userId, closedOrder.exchangeOrderId],
+		})
+		.returning({ id: closedOrder.id });
+	return inserted.length;
+}
+
 async function main(): Promise<void> {
 	const tickers = await fetchTickers();
 	const sectors = await seedSectors(tickers);
 	const news = await seedNews();
 	const alpha = await seedAlpha();
+	const orders = await seedOrders();
 	process.stdout.write(
-		`已灌入 ${sectors} 个板块快照、${news} 条新闻、${alpha} 个 Alpha 项目\n`
+		`已灌入 ${sectors} 个板块快照、${news} 条新闻、${alpha} 个 Alpha 项目、${orders} 笔订单\n`
 	);
 	process.exit(0);
 }
