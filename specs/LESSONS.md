@@ -35,4 +35,13 @@
 - **去重与摘要缓存**：`onConflictDoNothing(externalId)` 去重；摘要仅对 `aiSummary IS NULL` 生成（haiku、并发 5、`allSettled` 单条失败跳过下轮重试），同条只调一次 AI。
 - **游标分页**：`(publishedAt, id)` 复合游标，`desc(publishedAt), desc(id)`，cursor 编码 `ISO__id`；前端 `useInfiniteQuery(trpc.news.list.infiniteQueryOptions(input, { getNextPageParam: p => p.nextCursor }))`，tag 入参变化即重查。
 - **drizzle text[]**：`text("tags").array().notNull().default(sql\`'{}'::text[]\`)`；GIN 索引 `index(...).using("gin", table.tags)`，数组筛选用 `arrayContains(col, [tag])`；倒序索引 `table.col.desc()`。
-- **调度复用**：`apps/server/src/scheduler.ts` 加 `triggerNewsRefresh` + `startNewsScheduler`（独立互斥，复用 `SECTOR_REFRESH_INTERVAL_MS`）；内部端点 `POST /internal/news/refresh`。**注意**：格式化器会把「暂未被重新赋值的 `let`」改成 `const`——加可变模块级标志时，先连同赋值一起写，避免被改成 const 后报错。
+- **调度复用**：`apps/server/src/scheduler.ts` 加 `triggerNewsRefresh` + `startNewsScheduler`（独立互斥，复用 `SECTOR_REFRESH_INTERVAL_MS`）；内部端点 `POST /internal/news/refresh`。**注意**：格式化器会把「暂未被重新赋值的 `let`」改成 `const`——加可变模块级标志时，先连同赋值一起写（或整文件重写），避免被改成 const 后报错。
+
+## 2026-06-24 — F-004 Binance Alpha
+
+- **刷新按 name upsert（关键）**：`alpha_project` 整体刷新若用删+插会因 `user_alpha_watch` 外键 `onDelete cascade` 丢掉用户关注。改为 **name 唯一 + onConflictDoUpdate(name)**，项目 id 稳定、关注不丢。后续任何「关联用户数据的快照表」刷新都应保持父行 id 稳定。
+- **盘整规则**：纯函数 `packages/api/src/lib/alpha-rules.ts`（`change30d < -30 且 volatility7d < 10`，阈值常量、严格小于），8 单测覆盖临界。`volatility7d` 优先用 7 日价格序列 `(max-min)/min`，无序列时回退 `|change7d|`（OQ-3）。
+- **抓取**：`services/alpha.ts` 端点 `bapi/.../alpha/all/token/list` **需对照线上核验**（A1 中风险）；UA/超时/429-5xx 退避；失败写 `alpha_scrape_status(failed)` 保留旧快照。每日调度 `startAlphaScheduler`（DAY_MS）+ `POST /internal/alpha/refresh`。
+- **seed**：`pnpm db:seed` 已含 8 个 Alpha 项目（4 盘整/4 非），用于无真实抓取端点时的演示。
+- **@coin-pilot/ui 缺组件**：暂无 Popover/Tooltip/Table，依据展示用 `useState` 内联展开面板替代，避免引入新 ui 依赖。
+- **路由导航**：新功能页须在 `apps/web/src/components/header.tsx` 的 `links` 加入口，否则页面不可达（曾导致板块页看不到）。

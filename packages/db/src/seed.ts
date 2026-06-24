@@ -9,6 +9,8 @@ dotenv.config({ path: "../../apps/server/.env" });
 // biome-ignore lint/performance/noNamespaceImport: drizzle 需要完整 schema 命名空间用于关系映射
 import * as schema from "./schema";
 import {
+	alphaProject,
+	alphaScrapeStatus,
 	newsItem,
 	sectorLeader,
 	sectorRefreshLog,
@@ -288,11 +290,125 @@ async function seedNews(): Promise<number> {
 	return inserted.length;
 }
 
+interface AlphaDef {
+	change7d: number;
+	change30d: number;
+	name: string;
+	price: number;
+	volatility7d: number;
+}
+
+// 混合：部分满足底部盘整（change30d < -30 且 volatility < 10），部分不满足
+const ALPHA: AlphaDef[] = [
+	{
+		name: "ALT",
+		price: 0.181,
+		change7d: -4.2,
+		change30d: -38.5,
+		volatility7d: 6.1,
+	},
+	{
+		name: "MANTA",
+		price: 0.824,
+		change7d: -3.1,
+		change30d: -34.0,
+		volatility7d: 7.8,
+	},
+	{
+		name: "TIA",
+		price: 6.42,
+		change7d: -8.5,
+		change30d: -42.0,
+		volatility7d: 9.2,
+	},
+	{
+		name: "ZK",
+		price: 0.142,
+		change7d: -6.0,
+		change30d: -45.0,
+		volatility7d: 8.0,
+	},
+	{
+		name: "STRK",
+		price: 0.62,
+		change7d: 2.1,
+		change30d: -28.0,
+		volatility7d: 5.0,
+	},
+	{
+		name: "JUP",
+		price: 0.781,
+		change7d: -12.0,
+		change30d: -25.0,
+		volatility7d: 14.0,
+	},
+	{
+		name: "ENA",
+		price: 0.553,
+		change7d: 5.0,
+		change30d: -20.0,
+		volatility7d: 11.0,
+	},
+	{
+		name: "DYM",
+		price: 1.12,
+		change7d: -9.0,
+		change30d: -50.0,
+		volatility7d: 12.0,
+	},
+];
+
+const DROP30D_THRESHOLD = 30;
+const VOLATILITY_THRESHOLD = 10;
+
+async function seedAlpha(): Promise<number> {
+	const computedAt = new Date().toISOString();
+	for (const a of ALPHA) {
+		const isConsolidating =
+			a.change30d < -DROP30D_THRESHOLD && a.volatility7d < VOLATILITY_THRESHOLD;
+		const snapshot = {
+			change30d: a.change30d,
+			volatility7d: a.volatility7d,
+			thresholds: {
+				drop30d: DROP30D_THRESHOLD,
+				volatility7d: VOLATILITY_THRESHOLD,
+			},
+			computedAt,
+		};
+		await db
+			.insert(alphaProject)
+			.values({
+				name: a.name,
+				price: a.price,
+				change7d: a.change7d,
+				change30d: a.change30d,
+				isConsolidating,
+				consolidationSnapshot: snapshot,
+			})
+			.onConflictDoUpdate({
+				target: alphaProject.name,
+				set: {
+					price: a.price,
+					change7d: a.change7d,
+					change30d: a.change30d,
+					isConsolidating,
+					consolidationSnapshot: snapshot,
+					updatedAt: new Date(),
+				},
+			});
+	}
+	await db.insert(alphaScrapeStatus).values({ lastStatus: "success" });
+	return ALPHA.length;
+}
+
 async function main(): Promise<void> {
 	const tickers = await fetchTickers();
 	const sectors = await seedSectors(tickers);
 	const news = await seedNews();
-	process.stdout.write(`已灌入 ${sectors} 个板块快照、${news} 条新闻\n`);
+	const alpha = await seedAlpha();
+	process.stdout.write(
+		`已灌入 ${sectors} 个板块快照、${news} 条新闻、${alpha} 个 Alpha 项目\n`
+	);
 	process.exit(0);
 }
 

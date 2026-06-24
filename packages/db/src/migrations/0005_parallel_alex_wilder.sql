@@ -1,0 +1,1 @@
+ALTER TABLE "alpha_project" ADD CONSTRAINT "alpha_project_name_unique" UNIQUE("name");

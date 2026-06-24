@@ -8,8 +8,10 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
 import {
+	startAlphaScheduler,
 	startNewsScheduler,
 	startSectorScheduler,
+	triggerAlphaScrape,
 	triggerNewsRefresh,
 	triggerSectorRefresh,
 } from "./scheduler";
@@ -70,6 +72,21 @@ app.post("/internal/news/refresh", async (c) => {
 	}
 });
 
+app.post("/internal/alpha/refresh", async (c) => {
+	if (c.req.header("x-internal-token") !== env.INTERNAL_REFRESH_TOKEN) {
+		return c.json({ error: "unauthorized" }, 401);
+	}
+	try {
+		const result = await triggerAlphaScrape();
+		return c.json(result);
+	} catch (error) {
+		return c.json(
+			{ error: error instanceof Error ? error.message : "scrape failed" },
+			500
+		);
+	}
+});
+
 import { serve } from "@hono/node-server";
 
 serve(
@@ -81,5 +98,6 @@ serve(
 		console.log(`Server is running on http://localhost:${info.port}`);
 		startSectorScheduler();
 		startNewsScheduler();
+		startAlphaScheduler();
 	}
 );
