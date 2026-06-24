@@ -1,0 +1,38 @@
+{
+  "name": "coin-pilot",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "dev:web": "turbo -F web dev",
+    "dev:server": "turbo -F server dev",
+    "db:push": "turbo -F @coin-pilot/db db:push",
+    "db:studio": "turbo -F @coin-pilot/db db:studio",
+    "db:generate": "turbo -F @coin-pilot/db db:generate",
+    "db:migrate": "turbo -F @coin-pilot/db db:migrate",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@coin-pilot/env": "workspace:*",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.16",
+    "@coin-pilot/config": "workspace:*",
+    "@types/node": "catalog:",
+    "husky": "latest",
+    "turbo": "^2.9.16",
+    "typescript": "catalog:",
+    "ultracite": "7.8.3"
+  },
+  "packageManager": "pnpm@11.8.0"
+}

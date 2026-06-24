@@ -1,0 +1,6 @@
+{
+  "extends": "@coin-pilot/config/tsconfig.base.json",
+  "compilerOptions": {
+    "strictNullChecks": true
+  }
+}

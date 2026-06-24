@@ -1,0 +1,24 @@
+{
+  "name": "@coin-pilot/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@coin-pilot/db": "workspace:*",
+    "@coin-pilot/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@coin-pilot/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
